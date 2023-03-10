@@ -5,7 +5,7 @@
 <h2>Use the tool to create you own.</h2><br>
 <h2> This script takes time to generate the list</h2>
 <h3>This tool uses DNS Validator to create a list of DNS resolvers.<br>
-Clone the repo:<br>
+Clone the repo:
   git clone https://github.com/ghost11411/dns-resolver-list.git<br>
 
 Run the script:
