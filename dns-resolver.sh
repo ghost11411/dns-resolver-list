@@ -1,27 +1,28 @@
 #!/bin/bash
 
-dnsv_path=/tmp/dns_validator
-
-dnsvalidator -h >/dev/null
-if [ $(echo $?) -eq 0 ];then
-    echo
-    echo "DNSValidator Exists"
-    echo
-else
+function install_dnsv() {
     echo "Installing DNSValidator"
+    dnsv_path=/tmp/dns_validator
     git clone https://github.com/vortexau/dnsvalidator.git -q $dnsv_path
     pip3 install -r $dnsv_path/requirements.txt
     python3 $dnsv_path/setup.py install
+    rm -r /tmp/dns_validator
     echo
-fi
+}
 
-run=0
-dnsvalidator -tL https://public-dns.info/nameservers.txt -threads 100 -o /tmp/resolver$run.out --silent
+hash dnsvalidator 2>/dev/null && printf "[!] DNSValidator is already installed.\n" || { printf "[+] Installing DNSValidator!" && install_dnsv; }
 
-while run < 50 ;do
-    dnsvalidator -tL /tmp/resolver$run.out -threads 100 -o /tmp/resolvers$run.out --silent
+run=1
+file=/tmp/resolvers1.txt
+wget https://public-dns.info/nameservers.txt -P /tmp &>/dev/null && mv /tmp/nameservers.txt $file && chmod 777 $file  
+
+while [ $run -le 5 ];do
+    in=$file
+    ((run++))
+    dnsvalidator -tL $in -threads 20 -o /tmp/resolvers$run.out --silent
     sleep 2
-    run = run + 1
-done
-
-# sudo rm -r /tmp/dns_validator
+    echo
+    echo "Scanning Next Batch"
+done < $file
+echo
+echo "Done"
