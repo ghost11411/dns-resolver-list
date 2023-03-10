@@ -3,5 +3,9 @@
 <h3>OR</h3>
 <br>
 <h2>Use the tool</h2><br>
-<br>
 <h3>This tool uses DNS Validator to create a list of DNS resolvers.<br>
+Clone the repo:<br>
+  git clone https://github.com/ghost11411/dns-resolver-list.git<br>
+
+Run the script:
+  ./dns-resolver.sh
