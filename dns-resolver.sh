@@ -2,18 +2,9 @@
 
 dnsv_path=/tmp/dns_validator
 
-#CHECK ROOT
-echo -e "Checking Root Permissions"
-if [ "$EUID" -ne 0 ];then 
-    echo -e "Please run as root (use sudo ./dns-resolver.sh)"
-exit
-else
-    echo -e "**Root Permission Granted**"
-fi
-echo
-
 dnsvalidator -h >/dev/null
 if [ $(echo $?) -eq 0 ];then
+    echo
     echo "DNSValidator Exists"
     echo
 else
@@ -24,12 +15,13 @@ else
     echo
 fi
 
-dnsvalidator -tL https://public-dns.info/nameservers.txt -threads 100 -o /tmp/all.out --silent
 run=0
+dnsvalidator -tL https://public-dns.info/nameservers.txt -threads 100 -o /tmp/resolver$run.out --silent
 
 while run < 50 ;do
-    dnsvalidator -tL /tmp/all.out -threads 100 -o /tmp/resolvers$run.out --silent
+    dnsvalidator -tL /tmp/resolver$run.out -threads 100 -o /tmp/resolvers$run.out --silent
     sleep 2
+    run = run + 1
 done
 
 # sudo rm -r /tmp/dns_validator
