@@ -15,7 +15,7 @@ hash dnsvalidator 2>/dev/null && printf "[!] DNSValidator is already installed.\
 file=/tmp/resolve
 resolvers=/tmp/resolvers
 touch $resolvers
-#wget https://public-dns.info/nameservers.txt -P /tmp &>/dev/null && mv /tmp/nameservers.txt $file
+wget https://public-dns.info/nameservers.txt -P /tmp &>/dev/null && mv /tmp/nameservers.txt $file
 
 for i in $(seq 1 10);
 do  
