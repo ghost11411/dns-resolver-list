@@ -17,7 +17,7 @@ resolvers=/tmp/resolvers
 touch $resolvers
 wget https://public-dns.info/nameservers.txt -P /tmp &>/dev/null && mv /tmp/nameservers.txt $file
 
-for i in $(seq 1 10);
+for i in $(seq 1 25);
 do  
     echo && echo "Running Batch $i"
     dnsvalidator -tL $file -threads 100 --silent > $resolvers 
