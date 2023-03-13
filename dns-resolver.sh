@@ -12,17 +12,16 @@ function install_dnsv() {
 
 hash dnsvalidator 2>/dev/null && printf "[!] DNSValidator is already installed.\n" || { printf "[+] Installing DNSValidator!" && install_dnsv; }
 
-run=1
-file=/tmp/resolvers1.txt
-wget https://public-dns.info/nameservers.txt -P /tmp &>/dev/null && mv /tmp/nameservers.txt $file && chmod 777 $file  
+file=/tmp/resolve
+wget https://public-dns.info/nameservers.txt -P /tmp &>/dev/null && mv /tmp/nameservers.txt $file
 
-while [ $run -le 5 ];do
-    in=$file
-    ((run++))
-    dnsvalidator -tL $in -threads 20 -o /tmp/resolvers$run.out --silent
-    sleep 2
-    echo
-    echo "Scanning Next Batch"
-done < $file
-echo
-echo "Done"
+for i in $(seq 1 6);
+do  
+    resolvers=/tmp/resolvers
+    touch $resolvers
+    for r in $(seq 1 1);
+    do
+        dnsvalidator -tL $file -threads 100 -o $resolvers --silent
+        cat $resolvers > $file
+    done
+done
